@@ -1,4 +1,4 @@
-const NORTH = 'N',
+export const NORTH = 'N',
     SOUTH = 'S',
     WEST = 'W',
     EAST = 'E';
@@ -31,22 +31,22 @@ export default {
     },
     newHead(oldHead) {
         switch (this.direction) {
-            case NORTH:
+            case WEST:
                 return {
                     x: oldHead.x,
                     y: oldHead.y - 1
                 };
-            case SOUTH:
+            case EAST:
                 return {
                     x: oldHead.x,
                     y: oldHead.y + 1
                 };
-            case WEST:
+            case NORTH:
                 return {
                     x: oldHead.x - 1,
                     y: oldHead.y
                 };
-            case EAST:
+            case SOUTH:
                 return {
                     x: oldHead.x + 1,
                     y: oldHead.y

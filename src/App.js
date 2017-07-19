@@ -3,7 +3,13 @@ import logo from './logo.svg';
 import './App.css';
 
 import Board from './Board';
-import snake from './snake';
+import snake, {NORTH, SOUTH, EAST, WEST} from './snake';
+
+const ARROW_LEFT = 37,
+    ARROW_UP = 38,
+    ARROW_RIGHT = 39,
+    ARROW_DOWN = 40;
+
 
 class App extends Component {
     constructor(props) {
@@ -11,11 +17,15 @@ class App extends Component {
         this.state = {
             gameOver: false,
             size: 8,
-            body: snake.body
+            body: snake.body,
+            direction: snake.direction
         }
     }
 
     tick() {
+        // Update snake's direction
+        snake.changeDirection(this.state.direction);
+
         // Let's move the snake
         let canContinue = snake.move();
 
@@ -37,6 +47,31 @@ class App extends Component {
 
         // Setup an interval timer, each tick will move the snake
         this.interval = setInterval(() => {this.tick()}, 1000);
+    }
+
+    componentWillMount() {
+        window.addEventListener('keydown', (e) => {this.keyDownHandler(e)});
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('keydown', (e) => {this.keyDownHandler(e)});
+    }
+
+    keyDownHandler(e) {
+        switch (e.keyCode) {
+            case ARROW_UP:
+                this.setState({direction: NORTH});
+                break;
+            case ARROW_DOWN:
+                this.setState({direction: SOUTH});
+                break;
+            case ARROW_LEFT:
+                this.setState({direction: WEST});
+                break;
+            case ARROW_RIGHT:
+                this.setState({direction: EAST});
+                break;
+        }
     }
 
     render() {
