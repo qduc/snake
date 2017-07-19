@@ -9,21 +9,42 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            gameOver: false,
+            size: 8,
             body: snake.body
         }
     }
 
+    tick() {
+        // Let's move the snake
+        let canContinue = snake.move();
+
+        // Did it crash?
+        if (!canContinue) {
+            // Yes, stop the timer and show "Game over"
+            clearInterval(this.interval);
+            this.setState({gameOver: true});
+        }
+
+        // No, update its new position
+        this.setState({body: snake.body});
+    }
+
     componentDidMount() {
-        setTimeout(() => {
-            snake.move();
-            this.setState({body: snake.body});
-        }, 3000);
+        // Setup the snake
+        // It need to know the map size
+        snake.setMapSize(this.state.size);
+
+        // Setup an interval timer, each tick will move the snake
+        this.interval = setInterval(() => {this.tick()}, 1000);
     }
 
     render() {
+        let gameOver = this.state.gameOver ? (<div>Game over!</div>) : null;
         return (
             <div className="App">
-                <Board size="8" snake={this.state.body}/>
+                <Board size={this.state.size} snake={this.state.body}/>
+                {gameOver}
             </div>
         );
     }

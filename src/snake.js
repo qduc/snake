@@ -4,12 +4,18 @@ const NORTH = 'N',
     EAST = 'E';
 
 export default {
+    mapSize: null,
     body: [
         {x:0, y:0},
         {x:1, y:0},
         {x:2, y:0}
     ],
     direction: EAST,
+    setMapSize(size) {
+        if (Number.isInteger(size) && size > 0) {
+            this.mapSize = size;
+        }
+    },
     changeDirection(newDirection) {
         // Check new direction is valid
         if (newDirection.length !== 1 || this.direction === newDirection || (NORTH + SOUTH + WEST + EAST).indexOf(newDirection) === -1) {
@@ -52,6 +58,12 @@ export default {
     },
     isCollided(head) {
         // Check collide with map
+        if (head.x < 0 || head.x >= this.mapSize) {
+            return true;
+        }
+        if (head.y < 0 || head.y >= this.mapSize) {
+            return true;
+        }
 
         // Check collide with self
 
@@ -59,6 +71,10 @@ export default {
         return false;
     },
     move() {
+        if (this.mapSize === null) {
+            return false;
+        }
+
         // Remove the tail
         this.body.splice(0, 1);
 
