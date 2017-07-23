@@ -8,7 +8,9 @@ export default {
     body: [
         {x:0, y:0},
         {x:1, y:0},
-        {x:2, y:0}
+        {x:2, y:0},
+        {x:3, y:0},
+        {x:4, y:0},
     ],
     direction: EAST,
     setMapSize(size) {
@@ -65,8 +67,10 @@ export default {
             return true;
         }
 
-        // Check collide with self
-
+        // Check collide with itself
+        if (this.body.findIndex((element) => (element.x === head.x && element.y === head.y)) !== -1) {
+            return true;
+        }
 
         return false;
     },
@@ -74,9 +78,6 @@ export default {
         if (this.mapSize === null) {
             return false;
         }
-
-        // Remove the tail
-        this.body.splice(0, 1);
 
         // Calculate new head position
         let head = this.newHead(this.body[this.body.length - 1]);
@@ -92,6 +93,9 @@ export default {
                 return false;
             }
         }
+
+        // Remove the tail
+        this.body.splice(0, 1);
 
         // If no collision detected, add new head to body
         this.body.push(head);
