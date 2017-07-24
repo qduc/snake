@@ -55,9 +55,6 @@ export default {
                 };
         }
     },
-    isFood(head) {
-        return false;
-    },
     isCollided(head) {
         // Check collide with map
         if (head.x < 0 || head.x >= this.mapSize) {
@@ -74,7 +71,7 @@ export default {
 
         return false;
     },
-    move() {
+    move(food) {
         if (this.mapSize === null) {
             return false;
         }
@@ -82,20 +79,23 @@ export default {
         // Calculate new head position
         let head = this.newHead(this.body[this.body.length - 1]);
 
-        if (this.isFood(head)) {
-            // Remove food
-
-            // Add head
-
-        } else {
-            // Is new position collide with boundary or body?
-            if (this.isCollided(head)) {
-                return false;
-            }
+        // New head position is food?
+        let isFood = false;
+        if (head.x === food.x && head.y === food.y) {
+            isFood = true;
+            food.x = null;
+            food.y = null;
         }
 
-        // Remove the tail
-        this.body.splice(0, 1);
+        // Is new position collide with boundary or body?
+        if (this.isCollided(head)) {
+            return false;
+        }
+
+        if (!isFood) {
+            // Remove the tail
+            this.body.splice(0, 1);
+        }
 
         // If no collision detected, add new head to body
         this.body.push(head);

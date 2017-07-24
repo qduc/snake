@@ -10,6 +10,11 @@ const ARROW_LEFT = 37,
     ARROW_RIGHT = 39,
     ARROW_DOWN = 40;
 
+function getRandomInt(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
+}
 
 class App extends Component {
     constructor(props) {
@@ -18,8 +23,46 @@ class App extends Component {
             gameOver: false,
             size: 8,
             body: snake.body,
-            direction: snake.direction
+            direction: snake.direction,
+            food: null
+        };
+
+        this.validFoodPosition = this.validFoodPosition.bind(this);
+
+        this.state.food = this.generateFood(this.state.size);
+    }
+
+    validFoodPosition(food, mapSize) {
+        if (food.x === null || food.y === null) {
+            return false;
         }
+
+        // Is inside map
+        if (food.x < 0 || food.y < 0 || food.x >= mapSize || food.y >= mapSize) {
+            return false;
+        }
+
+        // Not overlap with snake's body
+        if (this.state.body.findIndex((element) => (element.x === food.x && element.y === food.y)) !== -1) {
+            return false;
+        }
+
+        return true;
+    }
+
+    generateFood(mapSize) {
+        let food = {
+            x: null,
+            y: null,
+        };
+        while (!this.validFoodPosition(food, mapSize)) {
+            food = {
+                x: getRandomInt(0, mapSize),
+                y: getRandomInt(0, mapSize),
+            };
+        }
+
+        return food;
     }
 
     tick() {
@@ -27,7 +70,12 @@ class App extends Component {
         snake.changeDirection(this.state.direction);
 
         // Let's move the snake
-        let canContinue = snake.move();
+        let canContinue = snake.move(this.state.food);
+
+        // Did the snake eat food?
+        if (this.state.food.x === null || this.state.food.y === null) {
+            this.setState({food: this.generateFood(this.state.size)});
+        }
 
         // Did it crash?
         if (!canContinue) {
@@ -78,7 +126,7 @@ class App extends Component {
         let gameOver = this.state.gameOver ? (<div>Game over!</div>) : null;
         return (
             <div className="App">
-                <Board size={this.state.size} snake={this.state.body}/>
+                <Board size={this.state.size} snake={this.state.body} food={this.state.food}/>
                 {gameOver}
             </div>
         );

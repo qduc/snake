@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 class Board extends Component {
-    createBoardFromCells(cells) {
+    createBoardFromCells(cells, food) {
         let board = [];
         let size = parseInt(this.props.size);
 
@@ -14,17 +14,22 @@ class Board extends Component {
         }
 
         for (let cell of cells) {
-            board[cell.x][cell.y] = 1;
+            board[cell.x][cell.y] = 'O';
+        }
+
+        if (food.hasOwnProperty('x') && food.hasOwnProperty('y') &&
+            !isNaN(food.x) && !isNaN(food.y)) {
+            board[food.x][food.y] = 'X';
         }
 
         return board;
     }
 
     render() {
-        let board = this.createBoardFromCells(this.props.snake);
+        let board = this.createBoardFromCells(this.props.snake, this.props.food);
         let rows = board.map((row, i) => {
             let cells = row.map((cell, j) =>
-                <span>{cell ? 'O' : '_'}</span>
+                <span>{cell !== 0 ? cell : '_'}</span>
             );
 
             return (
