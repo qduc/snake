@@ -21,7 +21,7 @@ class App extends Component {
         super(props);
         this.state = {
             gameOver: false,
-            size: 8,
+            size: 16,
             body: snake.body,
             direction: snake.direction,
             food: null
@@ -94,7 +94,7 @@ class App extends Component {
         snake.setMapSize(this.state.size);
 
         // Setup an interval timer, each tick will move the snake
-        this.interval = setInterval(() => {this.tick()}, 1000);
+        this.interval = setInterval(() => {this.tick()}, 500);
     }
 
     componentWillMount() {
